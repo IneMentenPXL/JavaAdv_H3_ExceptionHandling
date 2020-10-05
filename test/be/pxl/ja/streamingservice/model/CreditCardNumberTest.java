@@ -2,8 +2,7 @@ package be.pxl.ja.streamingservice.model;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class CreditCardNumberTest {
 
@@ -45,9 +44,11 @@ public class CreditCardNumberTest {
 
 	@Test
 	public void throwsInvalidArgumentExceptionWhenNumberTooShort() {
-		assertThrows(IllegalArgumentException.class, () -> {
+		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
 			new CreditCardNumber("  53218 76532 1476  ", " 1 2 3 ");
 		});
+		assertEquals("A card number must have 16 digits.", exception.getMessage());
+		assertTrue(exception.getMessage().contains("16"));
 	}
 
 	@Test
@@ -61,6 +62,20 @@ public class CreditCardNumberTest {
 	public void throwsInvalidArgumentExceptionWhenInvalidCardType() {
 		assertThrows(IllegalArgumentException.class, () -> {
 			new CreditCardNumber("7321876532147654", "123");
+		});
+	}
+
+	@Test
+	public void throwsIllegalArgumentExceptionWhenCVCTooShort() {
+		assertThrows(IllegalArgumentException.class, () -> {
+			new CreditCardNumber("5321876532147654", "12");
+		});
+	}
+
+	@Test
+	public void throwIllegalArgumentExceptionWhenCVCTooLong() {
+		assertThrows(IllegalArgumentException.class, () -> {
+			new CreditCardNumber("5321876532147654", "1234");
 		});
 	}
 }
